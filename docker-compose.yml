@@ -1,11 +1,47 @@
+version: '3.7'
+
 services:
   front:
     build:
-      context: .
+      context: ./front
       dockerfile: Dockerfile
       target: dev
     container_name: front
     ports:
-      - 3000:3000
+      - "3000:3000"
     volumes:
-      - ./:/react-app
+      - ./front:/react-app
+
+  api:
+    container_name: api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    environment:
+      PORT: '5000'
+      MERCURE_PUBLISHER_JWT_KEY: '!ChangeMe!'
+    ports:
+      - "5000:5000"
+      - "5002:2345"
+    volumes:
+      - ./api:/debug_env
+
+  mercure:
+    image: dunglas/mercure
+    restart: unless-stopped
+    container_name: mercure
+    environment:
+      MERCURE_PUBLISHER_JWT_KEY: '!ChangeMe!'
+      MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeMe!'
+      SERVER_NAME: ":80"
+    command: /usr/bin/caddy run -config /etc/caddy/Caddyfile.dev
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - ./mercure/Caddyfile.dev:/etc/caddy/Caddyfile.dev
+
+volumes:
+  caddy_data:
+  caddy_config:

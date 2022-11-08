@@ -10,6 +10,17 @@ helm repo add mercure https://charts.mercure.rocks
 helm install my-release mercure/mercure
 ```
 
+## To generate JWT signing keys
+```bash
+cd docker/jwt
+
+ssh-keygen -t rsa -b 4096 -m PEM -f publisher.key
+openssl rsa -in publisher.key -pubout -outform PEM -out publisher.key.pub
+
+ssh-keygen -t rsa -b 4096 -m PEM -f subscriber.key
+openssl rsa -in subscriber.key -pubout -outform PEM -out subscriber.key.pub
+```
+
 ## To visit Mercure Hub
 
 ```bash
