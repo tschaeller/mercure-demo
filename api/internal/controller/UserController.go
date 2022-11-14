@@ -23,9 +23,15 @@ func EmptyUsersList(c *gin.Context) {
 func AddUser(c *gin.Context) {
     var newUser model.User
 
-    if c.BindJSON(&newUser) == nil {
-        manager.AddUser(c, newUser)
+    if (c.BindJSON(&newUser) != nil || manager.HasUser(c, newUser)) {
+        c.JSON(400, gin.H{
+                "message": "The username is already in use.",
+            })
+
+        return
     }
+
+    manager.AddUser(c, newUser)
 
     ss := service.GetJwt(newUser)
 

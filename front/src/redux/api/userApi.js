@@ -11,7 +11,7 @@ export const userApi = createApi({
                 method: `POST`,
                 body: data
             }),
-            transformResponse: (response, meta, arg) => response
+            transformResponse: (response, meta, arg) => response,
         })
     }),
 })

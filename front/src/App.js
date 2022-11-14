@@ -1,12 +1,18 @@
-import './App.css';
-import LoginScreen from "./components/home/login";
+import './App.scss';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
+import LoginScreen from "./components/home/Login";
 import {useDispatch, useSelector} from "react-redux";
 import RoomSelection from "./components/chat/RoomSelection";
-import {useEventSource} from "@react-nano/use-event-source";
-import {getEventSource, getSSEUrl} from "./services/MercureSubscriptionService";
+import {getEventSource} from "./services/MercureSubscriptionService";
 import {newUser} from "./redux/slices/userSlice";
 import {newMessage} from "./redux/slices/chatSlice";
 import {useEffect} from "react";
+import {Grid, Typography} from "@mui/material";
+import {UserAvatar} from "./components/user/UserAvatar";
 
 const App = () => {
     const dispatch = useDispatch();
@@ -29,17 +35,27 @@ const App = () => {
                 alert(`New message from : ${decodedData.from}\n message : ${decodedData.message}`)
             }
         }
-    }, [eventSource])
+    }, [eventSource, currentUser, dispatch, currentRoom]);
 
     if (currentUser === undefined) {
         return (<LoginScreen/>);
     }
 
     return (
-        <div>
-            Connected as : {currentUser}
-            <RoomSelection/>
-        </div>
+        <Grid container spacing={1}>
+            <Grid item xs={12} className={"App-header"}>
+                <Typography fontSize={"xxx-large"}>Welcome to Mercure.rocks</Typography>
+            </Grid>
+
+            <Grid container xs={12} justifyContent={"right"}>
+                <Grid item xs={1} marginTop={"2em"} textAlign={"right"} paddingRight={"1em"}>
+                    <UserAvatar userName={currentUser}/>
+                </Grid>
+            </Grid>
+            <Grid item xs={12}>
+                <RoomSelection/>
+            </Grid>
+        </Grid>
 
     );
 }

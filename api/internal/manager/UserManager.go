@@ -16,13 +16,15 @@ func EmptyUsers(c *gin.Context) ([]model.User) {
     return users
 }
 
-// func AddUser(c *gin.Context, newUser model.User) ([]model.User) {
-//     t := make([]model.User, len(users), (cap(users)+1))
-//     copy(t, users)
-//     users = t
-//
-//     return users
-// }
+func HasUser(c *gin.Context, search model.User) bool {
+    for _, user := range users {
+        if (user.Username == search.Username) {
+            return true
+        }
+    }
+
+    return false
+}
 
 func AddUser(c *gin.Context, newUsers ...model.User) []model.User {
     m := len(users)

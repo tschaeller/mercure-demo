@@ -3,17 +3,18 @@ import {useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {usePostMessageMutation} from "../../redux/api/chatApi";
 import MessageList from "./MessageList";
+import {Button, Grid, TextField} from "@mui/material";
 
-const Room = props => {
+const Room = () => {
     const userState = useSelector((state) => state.user.user);
     const currentRoom = useSelector((state) => state.chat.currentRoom);
     const [messageValue, setMessageValue] = useState("");
-    const [postMessage, result] = usePostMessageMutation();
+    const [postMessage] = usePostMessageMutation();
 
     // Reset the text input when you switch room
     useEffect(() => {
         setMessageValue("")
-    }, [currentRoom])
+    }, [currentRoom]);
 
     const onMessageSendClick = () => {
         if (messageValue !== "") {
@@ -23,14 +24,36 @@ const Room = props => {
     }
 
     return (
-        <div>
-            Currently in the Room : {currentRoom} <br/><br/>
+        <Grid container spacing={1} marginTop={"2em"} justifyContent={"center"}>
+            <Grid
+                container xs={6}
+                justifyContent={"center"}
+            >
+                <MessageList/>
 
-            <MessageList/>
-
-            <input type={"text"} value={messageValue} onChange={(event) => setMessageValue(event.target.value)}/>
-            <button onClick={onMessageSendClick}>Send message</button>
-        </div>
+                <Grid
+                    item
+                    xs={7}
+                >
+                    <TextField
+                        sx={{width: "90%", float: "right"}}
+                        label={"Message"}
+                        variant={"standard"}
+                        value={messageValue}
+                        onChange={(event) => setMessageValue(event.target.value)}
+                    />
+                </Grid>
+                <Grid item xs={3}>
+                    <Button
+                        sx={{width: "70%", marginTop: "1em", marginLeft: "1em"}}
+                        variant={"contained"}
+                        onClick={onMessageSendClick}
+                    >
+                        Send
+                    </Button>
+                </Grid>
+            </Grid>
+        </Grid>
     );
 }
 
