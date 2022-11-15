@@ -5,7 +5,7 @@ import {joinRoom} from "../../redux/slices/chatSlice";
 import Room from "./Room";
 import {useEffect} from "react";
 import {initUsers} from "../../redux/slices/userSlice";
-import {Button, Grid, IconButton} from "@mui/material";
+import {Button, LinearProgress, Grid, IconButton} from "@mui/material";
 import {UserAvatar} from "../user/UserAvatar";
 
 const getRoomNameFromUsername = (currentUser, userName) => {
@@ -31,7 +31,7 @@ const RoomSelection = () => {
     }, [data, dispatch]);
 
     if (isLoading) {
-        return (<div>Loading...</div>);
+        return (<LinearProgress/>);
     }
 
     const onUsernameClick = (username) => {

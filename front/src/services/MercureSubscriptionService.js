@@ -4,13 +4,14 @@ export const getEventSource = (topics = []) => {
     if (es !== undefined) {
         es.close();
     }
-    
-    const subscribeURL = new URL('http://localhost/.well-known/mercure');
+
+    const mercureEntrypoint = process.env.REACT_APP_MERCURE_ENTRYPOINT;
+    const subscribeURL = new URL(`${mercureEntrypoint}/.well-known/mercure`);
     topics.forEach((topic) => {
         subscribeURL.searchParams.append("topic", topic);
     });
 
-    es = new EventSource(subscribeURL, {withCredentials: true});
+    es = new EventSource(subscribeURL, {withCredentials: false});
 
     return es;
 }

@@ -18,9 +18,14 @@ const App = () => {
     const dispatch = useDispatch();
     const currentRoom = useSelector((state) => state.chat.currentRoom);
     const currentUser = useSelector((state) => state.user).user;
-    const eventSource = getEventSource([`/room/{otherUser}${currentUser}{otherUser}`, `general`, `newUser`]);
 
     useEffect(() => {
+        if (!currentUser) {
+            return;
+        }
+
+        const eventSource = getEventSource([`/room/{otherUser}${currentUser}{otherUser}`, `general`, `newUser`]);
+
         eventSource.onmessage = ({data}) => {
             const decodedData = JSON.parse(data);
 
@@ -35,7 +40,7 @@ const App = () => {
                 alert(`New message from : ${decodedData.from}\n message : ${decodedData.message}`)
             }
         }
-    }, [eventSource, currentUser, dispatch, currentRoom]);
+    }, [currentUser, dispatch, currentRoom]);
 
     if (currentUser === undefined) {
         return (<LoginScreen/>);
