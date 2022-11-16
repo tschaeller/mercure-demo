@@ -12,7 +12,7 @@ In three different bash :
 ```bash
 ssh -R 80:localhost:3000 nokey@localhost.run
 ssh -R 80:localhost:5000 nokey@localhost.run
-ssh -R 80:localhost nokey@localhost.run
+ssh -R 80:localhost:80 nokey@localhost.run
 ```
 Then update the .env in the ./front with the URLs provided by the second and third command
 ```bash

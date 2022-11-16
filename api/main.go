@@ -27,6 +27,7 @@ func main() {
     chatGroup := r.Group("/chat")
     {
         chatGroup.POST("", controller.SendNewMessage)
+        chatGroup.GET("", controller.GetMessages)
     }
 
     r.Run() // listen and serve on 0.0.0.0:$PORT (default :5000)

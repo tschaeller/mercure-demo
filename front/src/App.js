@@ -9,15 +9,19 @@ import {useDispatch, useSelector} from "react-redux";
 import RoomSelection from "./components/chat/RoomSelection";
 import {getEventSource} from "./services/MercureSubscriptionService";
 import {newUser} from "./redux/slices/userSlice";
-import {newMessage} from "./redux/slices/chatSlice";
-import {useEffect} from "react";
-import {Grid, Typography} from "@mui/material";
+import {joinRoom, newMessage} from "./redux/slices/chatSlice";
+import {useEffect, useState} from "react";
+import {Grid, Snackbar, Typography} from "@mui/material";
 import {UserAvatar} from "./components/user/UserAvatar";
+import * as React from "react";
 
 const App = () => {
     const dispatch = useDispatch();
     const currentRoom = useSelector((state) => state.chat.currentRoom);
     const currentUser = useSelector((state) => state.user).user;
+    const [newMessageReceived, setNewMessageReceived] = useState(false);
+    const [newMessageReceivedNotification, setNewMessageReceivedNotification] = useState("");
+    const [newMessageReceivedRoom, setNewMessageReceivedRoom] = useState("");
 
     useEffect(() => {
         if (!currentUser) {
@@ -34,16 +38,33 @@ const App = () => {
                 return;
             }
 
-            dispatch(newMessage({room: decodedData.topic, message: decodedData.message, from: decodedData.from}))
+            if (decodedData.topic === currentRoom) {
+                dispatch(newMessage({room: decodedData.topic, message: decodedData.message, from: decodedData.from}))
+            }
 
             if (decodedData.from !== currentUser && decodedData.topic !== currentRoom) {
-                alert(`New message from : ${decodedData.from}\n message : ${decodedData.message}`)
+                setNewMessageReceived(true)
+                setNewMessageReceivedNotification(`New message from ${decodedData.from}`)
+                setNewMessageReceivedRoom(decodedData.topic)
             }
         }
     }, [currentUser, dispatch, currentRoom]);
 
     if (currentUser === undefined) {
         return (<LoginScreen/>);
+    }
+
+    const onHideNotification = () => {
+        setNewMessageReceived(false)
+        setNewMessageReceivedNotification("")
+        setNewMessageReceivedRoom("")
+    }
+
+    const onClickNotification = () => {
+        if (newMessageReceivedRoom) {
+            dispatch(joinRoom(newMessageReceivedRoom))
+            setNewMessageReceivedRoom("")
+        }
     }
 
     return (
@@ -60,8 +81,15 @@ const App = () => {
             <Grid item xs={12}>
                 <RoomSelection/>
             </Grid>
+            <Snackbar
+                open={newMessageReceived}
+                className={"clickable"}
+                onClick={onClickNotification}
+                autoHideDuration={6000}
+                message={newMessageReceivedNotification}
+                onClose={onHideNotification}
+            />
         </Grid>
-
     );
 }
 

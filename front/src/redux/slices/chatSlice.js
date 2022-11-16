@@ -12,6 +12,9 @@ export const chatSlice = createSlice({
         joinRoom: (state, action) => {
             state.currentRoom = action.payload;
         },
+        initMessages: (state, action) => {
+            state.messages[action.payload.room] = action.payload.messages;
+        },
         newMessage: (state, action) => {
             if (!state.messages[action.payload.room]) {
                 state.messages[action.payload.room] = [];
@@ -22,6 +25,6 @@ export const chatSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const {joinRoom, newMessage} = chatSlice.actions
+export const {joinRoom, newMessage, initMessages} = chatSlice.actions
 
 export default chatSlice;

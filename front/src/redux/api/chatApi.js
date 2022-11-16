@@ -4,6 +4,7 @@ export const chatApi = createApi({
     reducerPath: 'chatApi',
     baseQuery: fetchBaseQuery({baseUrl: process.env.REACT_APP_API_ENTRYPOINT}),
     endpoints: (builder) => ({
+        getMessages: builder.query({query: (room) => `/chat?room=${room}`}),
         postMessage: builder.mutation({
             query: (data) => ({
                 url: `/chat`,
@@ -24,6 +25,6 @@ export const chatApi = createApi({
 })
 
 // auto-generated based on the defined endpoints
-export const {usePostMessageMutation} = chatApi
+export const {usePostMessageMutation, useGetMessagesQuery} = chatApi
 
 export default chatApi;

@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"contentside.com/demo/api/internal/model"
 	"contentside.com/demo/api/internal/service"
+	"contentside.com/demo/api/internal/manager"
 )
 
 func SendNewMessage(c *gin.Context) {
@@ -15,7 +16,10 @@ func SendNewMessage(c *gin.Context) {
          c.JSON(400, gin.H{
                 "status": "error",
             })
+        return;
     }
+
+    manager.AddMessageToRoom(c, reqPostData.Topic, reqPostData)
 
     fromUser := model.User{
         Username: reqPostData.From,
@@ -23,7 +27,6 @@ func SendNewMessage(c *gin.Context) {
     ss := service.GetJwt(fromUser)
 
     resp, err := service.SendMercureEvent(reqPostData.Topic, ss, reqPostData.Message)
-
 
     resBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -42,4 +45,19 @@ func SendNewMessage(c *gin.Context) {
             "response": string(resBody),
         })
     }
+}
+
+func GetMessages(c *gin.Context) {
+    room, found := c.GetQuery("room")
+    if (!found) {
+        c.JSON(400, gin.H{
+                    "status": "error",
+                })
+        return;
+    }
+
+    c.JSON(200, gin.H{
+            "room": room,
+            "messages": manager.GetMessagesForRoom(room),
+        })
 }

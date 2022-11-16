@@ -23,10 +23,16 @@ const Room = () => {
         }
     }
 
+    const onKeyDown = (event) => {
+        if (event.code === "Enter") {
+            onMessageSendClick();
+        }
+    }
+
     return (
         <Grid container spacing={1} marginTop={"2em"} justifyContent={"center"}>
             <Grid
-                container xs={6}
+                container xs={8}
                 justifyContent={"center"}
             >
                 <MessageList/>
@@ -41,10 +47,12 @@ const Room = () => {
                         variant={"standard"}
                         value={messageValue}
                         onChange={(event) => setMessageValue(event.target.value)}
+                        onKeyDown={onKeyDown}
                     />
                 </Grid>
                 <Grid item xs={3}>
                     <Button
+                        type={"submit"}
                         sx={{width: "70%", marginTop: "1em", marginLeft: "1em"}}
                         variant={"contained"}
                         onClick={onMessageSendClick}
